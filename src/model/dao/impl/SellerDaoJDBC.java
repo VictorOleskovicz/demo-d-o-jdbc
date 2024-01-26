@@ -4,8 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import db.DB;
 import db.DbException;
 import model.dao.SellerDao;
 import module.entities.Department;
@@ -67,6 +71,11 @@ public class SellerDaoJDBC implements SellerDao {
 			throw new DbException(e.getMessage());
 			
 		}
+		finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
+		
 		
 	}
 
@@ -87,7 +96,7 @@ public class SellerDaoJDBC implements SellerDao {
 		Department dep = new Department();
 		dep.setId(rs.getInt("DepartmentId"));
 		dep.setName(rs.getString("DepName"));
-		return null;
+		return dep;
 	}
 
 
@@ -96,6 +105,60 @@ public class SellerDaoJDBC implements SellerDao {
 	public List<Seller> findAll() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+
+	@Override
+	public List<Seller> findByDep(Department department) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			st = conn.prepareStatement(
+					"SELECT seller.*,department.Name as DepName FROM seller INNER JOIN department\n"
+					+ "ON seller.DepartmentId = department.Id WHERE DepartmentId = ?\n"
+					+ "ORDER BY Name ");
+			
+			st.setInt(1, department.getId());
+			rs = st.executeQuery();
+			// rs agora possui a tabela resultante da nossa pesquisa, precisamos instanciar em objeto
+			List<Seller> list = new ArrayList<>();
+			//instanciar um map para não repetir a instanciação de departamentos
+			Map<Integer, Department> map = new HashMap<>();
+			
+			while (rs.next()) {
+				
+				//sets key dep
+				Department dep = map.get(rs.getInt("DepartmentId"));
+				if (dep == null) {
+					
+					//gets next dep
+					dep = instantiateDepartment(rs);
+					//has the key dep and the other 
+					map.put(rs.getInt("DepartmentId"), dep);
+					
+					//if dep already exists, the if fails
+				}
+				
+				Seller obj = instantiateSeller(rs, dep);
+				list.add(obj);
+				
+				
+			}
+			return list;
+		
+			
+		}
+		catch (SQLException e) {
+			throw new DbException(e.getMessage());
+			
+		}
+		finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
+		
+		
 	}
 
 }
