@@ -54,16 +54,8 @@ public class SellerDaoJDBC implements SellerDao {
 			rs = st.executeQuery();
 			// rs agora possui a tabela resultante da nossa pesquisa, precisamos instanciar em objeto
 			if (rs.next()) {
-				Department dep = new Department();
-				dep.setId(rs.getInt("DepartmentId"));
-				dep.setName(rs.getString("DepName"));
-				Seller obj = new Seller();
-				obj.setId(rs.getInt("Id"));
-				obj.setName(rs.getString("Name"));
-				obj.setBaseSalary(rs.getDouble("BaseSalary"));
-				obj.setBirthDate(rs.getDate("BirthDate"));
-				obj.setEmail(rs.getString("Email"));
-				obj.setDepartment(dep);
+				Department dep = instantiateDepartment(rs);
+				Seller obj = instantiateSeller(rs, dep);
 				
 				return obj;
 			}
@@ -77,6 +69,28 @@ public class SellerDaoJDBC implements SellerDao {
 		}
 		
 	}
+
+	private Seller instantiateSeller(ResultSet rs, Department dep) throws SQLException {
+		Seller obj = new Seller();
+		obj.setId(rs.getInt("Id"));
+		obj.setName(rs.getString("Name"));
+		obj.setBaseSalary(rs.getDouble("BaseSalary"));
+		obj.setBirthDate(rs.getDate("BirthDate"));
+		obj.setEmail(rs.getString("Email"));
+		obj.setDepartment(dep);
+		return obj;
+	}
+
+
+
+	private Department instantiateDepartment(ResultSet rs) throws SQLException {
+		Department dep = new Department();
+		dep.setId(rs.getInt("DepartmentId"));
+		dep.setName(rs.getString("DepName"));
+		return null;
+	}
+
+
 
 	@Override
 	public List<Seller> findAll() {
