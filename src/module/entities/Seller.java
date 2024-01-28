@@ -1,7 +1,7 @@
 package module.entities;
 
-import java.sql.Date;
 import java.util.Objects;
+import java.util.Date;
 
 public class Seller {
 	
@@ -18,7 +18,6 @@ public class Seller {
 	}
 
 	public Seller(Integer id, String name, String email, Date birthDate, Double baseSalary, Department department) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.email = email;
