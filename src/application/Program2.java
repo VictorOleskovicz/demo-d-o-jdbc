@@ -36,6 +36,11 @@ public class Program2 {
 		System.out.println("==== 3rd test = Delete by Id ====");
 		departmentDao.deleteById(9);
 		System.out.println("Done! ");
+		
+		System.out.println("==== 4th test = update ====");
+		Department dep3 = new Department(10, "Computer Science");
+		departmentDao.update(dep3);
+		System.out.println("Done! ");
 
 		
 		

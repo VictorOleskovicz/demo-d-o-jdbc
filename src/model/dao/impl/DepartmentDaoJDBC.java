@@ -49,10 +49,10 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement("UPDATE department\n"
-					+ "SET Id = ?, Name = ?");
+					+ "SET Name = ? WHERE id = ?");
 			
-			st.setInt(1, obj.getId());
-			st.setString(2, obj.getName());
+			st.setInt(2, obj.getId());
+			st.setString(1, obj.getName());
 			
 			st.executeUpdate();
 			
@@ -82,6 +82,9 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 		catch (SQLException e) {
 			e.printStackTrace();
 		}
+		finally {
+			DB.closeStatement(st);
+		}
 		
 				
 	}
@@ -106,6 +109,10 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
+		}
+		finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
 		}
 		
 		
