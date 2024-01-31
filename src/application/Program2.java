@@ -33,6 +33,12 @@ public class Program2 {
 			
 		}
 		
+		System.out.println("==== 3rd test = Delete by Id ====");
+		departmentDao.deleteById(9);
+		System.out.println("Done! ");
+
+		
+		
 		
 		
 		sc.close();
